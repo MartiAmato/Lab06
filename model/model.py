@@ -35,7 +35,33 @@ class DepositoStrumenti:
             Funzione che legge tutti gli strumenti nel database
             :return: una lista con tutti gli strumenti presenti oppure None
         """
-        # TODO
+        cnx = get_connection()
+        if cnx is None:
+            return None
+        cursor = cnx.cursor(dictionary=True)
+        strumenti = []
+        query = """
+            SELECT *
+            FROM strumento
+        """
+        try:
+            cursor.execute(query)
+            for row in cursor.fetchall():
+                nuovo_strumento = Strumento(
+                    row['codice'],
+                    row['tipo'],
+                    row['marca'],
+                    row['anno_acquisto'],
+                    row['valore'],
+                    row['disponibile']
+                )
+                strumenti.append(nuovo_strumento)
+        except Exception as e:
+            print(f"errore nel DB: {e}")
+            return None
+        cursor.close()
+        cnx.close()
+        return strumenti
 
     def cerca_strumenti_per_tipo(self, tipo) -> list[Strumento] | None:
         """
@@ -43,4 +69,27 @@ class DepositoStrumenti:
             :param tipo: il tipo dello strumento (es. "Chitarra")
             :return: una lista con tutti gli strumenti del tipo indicato oppure None
         """
-        # TODO
+        cnx = get_connection() #apro la connessione
+        if cnx is None:
+            return None
+        cursor = cnx.cursor(dictionary=True)
+        strumenti = []
+        query = """ SELECT * FROM strumento WHERE tipo=%s """
+        try:
+            cursor.execute(query, (tipo,))
+            for row in cursor.fetchall():
+                nuovo_strumento = Strumento(
+                    row['codice'],
+                    row['tipo'],
+                    row['marca'],
+                    row['anno_acquisto'],
+                    row['valore'],
+                    row['disponibile']
+                )
+                strumenti.append(nuovo_strumento)
+        except Exception as e:
+            print(f"errore nel DB: {e}")
+            return None
+        cursor.close()
+        cnx.close()
+        return strumenti

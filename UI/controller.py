@@ -27,5 +27,26 @@ class Controller:
         self._view.txt_responsabile.value = f"Responsabile: {self._model.responsabile}"
         self._view.update()
 
-    # Altre Funzioni Event Handler
-    # TODO
+# Altre Funzioni Event Handler
+    def mostra_strumenti(self, e):
+        lista_strumenti = self._model.get_strumenti() #chiedo al model di darmi la lista di tutti gli strumenti
+        self._view.lista_strumenti.controls.clear() #pulisco l'output cosi se premo due volte il tasto mostra non fa niente
+        if lista_strumenti is not None:
+            for strumento in lista_strumenti:
+                testo_strumento = ft.Text(str(strumento))
+                self._view.lista_strumenti.controls.append(testo_strumento)
+        else:
+            self._view.lista_strumenti.controls.append(ft.Text("nessuno strumento trovato"))
+        self._view.update()
+
+    def cerca_strumenti(self, e):
+        self._view.lista_strumenti_ricerca.controls.clear() #pulisco l'output cosi se premo due volte il tasto mostra non fa niente
+        tipo_cercato = self._view.input_tipo_strumento.value #vedo cosa ha cercato l'utente
+        risultati = self._model.cerca_strumenti_per_tipo(tipo_cercato)
+        if risultati:
+            for strumento in risultati:
+                testo_strumento = ft.Text(str(strumento))
+                self._view.lista_strumenti_ricerca.controls.append(testo_strumento)
+        else:
+            self._view.lista_strumenti_ricerca.controls.append(ft.Text("nessuno strumento trovato"))
+        self._view.update()
